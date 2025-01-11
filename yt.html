@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search YouTube Channel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      padding: 0;
+      text-align: center;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      width: 300px;
+    }
+    .results {
+      margin-top: 20px;
+      text-align: left;
+      max-width: 600px;
+      margin: 20px auto;
+    }
+    img {
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h1>YouTube Channel Search</h1>
+  <input id="channel-name" type="text" placeholder="Enter channel name">
+  <button onclick="searchYouTube()">Search</button>
+  <div id="results" class="results"></div>
+
+  <script>
+    const API_KEY = "AIzaSyDFXNJT3ufp9-i3GxrlFv7pQQRU_YongvA"; // Ganti dengan API Key YouTube Anda
+
+    async function searchYouTube() {
+      const channelName = document.getElementById("channel-name").value;
+      const resultsDiv = document.getElementById("results");
+
+      if (!channelName) {
+        resultsDiv.innerHTML = "Please enter a channel name!";
+        return;
+      }
+
+      resultsDiv.innerHTML = "Searching for channel information...";
+
+      try {
+        // Search for the channel
+        const searchResponse = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(channelName)}&type=channel&maxResults=1&key=${API_KEY}`);
+        const searchData = await searchResponse.json();
+
+        if (!searchData.items || searchData.items.length === 0) {
+          resultsDiv.innerHTML = `No channel found with the name "${channelName}".`;
+          return;
+        }
+
+        const channel = searchData.items[0];
+        const channelId = channel.id.channelId;
+        const channelSnippet = channel.snippet;
+
+        // Get channel details
+        const detailsResponse = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${channelId}&key=${API_KEY}`);
+        const detailsData = await detailsResponse.json();
+
+        const channelDetails = detailsData.items[0];
+        const { title, description, publishedAt, thumbnails } = channelDetails.snippet;
+        const { subscriberCount, viewCount, videoCount } = channelDetails.statistics;
+
+        // Build results
+        resultsDiv.innerHTML = `
+          <h2>Channel Information</h2>
+          <img src="${thumbnails.high.url}" alt="${title}">
+          <p><strong>Name:</strong> ${title}</p>
+          <p><strong>Subscribers:</strong> ${subscriberCount || "Hidden"}</p>
+          <p><strong>Created At:</strong> ${new Date(publishedAt).toLocaleDateString()}</p>
+          <p><strong>Description:</strong> ${description || "No description available."}</p>
+          <p><strong>Total Views:</strong> ${viewCount}</p>
+          <p><strong>Total Videos:</strong> ${videoCount}</p>
+        `;
+
+        // Get latest video
+        const videoResponse = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&order=date&type=video&maxResults=1&key=${API_KEY}`);
+        const videoData = await videoResponse.json();
+
+        if (videoData.items && videoData.items.length > 0) {
+          const latestVideo = videoData.items[0];
+          const videoTitle = latestVideo.snippet.title;
+          const videoId = latestVideo.id.videoId;
+
+          resultsDiv.innerHTML += `
+            <h3>Latest Video</h3>
+            <p><a href="https://www.youtube.com/watch?v=${videoId}" target="_blank">${videoTitle}</a></p>
+          `;
+        }
+      } catch (error) {
+        console.error(error);
+        resultsDiv.innerHTML = `Error occurred: ${error.message}`;
+      }
+    }
+  </script>
+</body>
+  </html>
