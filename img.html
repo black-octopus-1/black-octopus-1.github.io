@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reverse Image Search</title>
+</head>
+<body>
+
+    <h1>Haha</h1>
+    
+    <label for="imageUrl">Enter Image URL:</label>
+    <input type="text" id="imageUrl" placeholder="Enter image URL">
+    <button onclick="reverseImageSearch()">Search</button>
+    
+    <div id="result"></div>
+
+    <script>
+        async function reverseImageSearch() {
+            const imageUrl = document.getElementById("imageUrl").value;
+            
+            if (!imageUrl) {
+                alert("Please enter a valid image URL.");
+                return;
+            }
+
+            const url = "https://google-reverse-image-api.vercel.app/reverse";
+            const data = {
+                imageUrl: imageUrl
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    const jsonResponse = await response.json();
+                    document.getElementById("result").innerText = JSON.stringify(jsonResponse, null, 2);
+                } else {
+                    document.getElementById("result").innerText = "Error: " + response.status;
+                }
+            } catch (error) {
+                document.getElementById("result").innerText = 'Error: ' + error;
+            }
+        }
+    </script>
+
+</body>
+</html>
