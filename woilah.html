@@ -30,7 +30,7 @@
     <script>
         document.getElementById('checkStatus').addEventListener('click', () => {
             const statusMessage = document.getElementById('statusMessage');
-            fetch('https://black-octopus-1.github.io', { method: 'HEAD' })
+            fetch('https://black-octopus-1.github.io/woilah.html', { method: 'HEAD' })
                 .then(response => {
                     if (response.ok) {
                         statusMessage.textContent = "Anda Online (HTTP 200)";
