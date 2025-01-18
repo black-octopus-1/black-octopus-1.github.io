@@ -24,11 +24,11 @@
 </head>
 <body>
     <h1>Website Connection Status</h1>
-    <button id="checkStatus">Check Status</button>
     <div class="status" id="statusMessage"></div>
 
     <script>
-        document.getElementById('checkStatus').addEventListener('click', () => {
+        // Fungsi untuk memeriksa status secara otomatis ketika halaman dimuat
+        window.onload = function() {
             const statusMessage = document.getElementById('statusMessage');
             fetch('https://black-octopus-1.github.io/woilah.html', { method: 'HEAD' })
                 .then(response => {
@@ -44,7 +44,7 @@
                     statusMessage.textContent = "Tidak ada jaringan atau gagal mengakses server.";
                     statusMessage.className = "status error";
                 });
-        });
+        };
     </script>
 </body>
 </html>
