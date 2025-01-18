@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        .status {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Website Connection Status</h1>
+    <button id="checkStatus">Check Status</button>
+    <div class="status" id="statusMessage"></div>
+
+    <script>
+        document.getElementById('checkStatus').addEventListener('click', () => {
+            const statusMessage = document.getElementById('statusMessage');
+            fetch('https://black-octopus-1.github.io', { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        statusMessage.textContent = "Anda Online (HTTP 200)";
+                        statusMessage.className = "status success";
+                    } else {
+                        statusMessage.textContent = `Error: ${response.status} ${response.statusText}`;
+                        statusMessage.className = "status error";
+                    }
+                })
+                .catch(error => {
+                    statusMessage.textContent = "Tidak ada jaringan atau gagal mengakses server.";
+                    statusMessage.className = "status error";
+                });
+        });
+    </script>
+</body>
+</html>
