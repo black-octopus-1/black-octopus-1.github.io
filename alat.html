@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lookup & Network Check</title>
+    <script>
+        async function ipLookup() {
+            let ip = document.getElementById("ip").value;
+            if (!ip) return alert("Masukkan IP Address!");
+
+            try {
+                let response = await fetch(`https://ipapi.co/${ip}/json/`);
+                let data = await response.json();
+                document.getElementById("result").innerHTML = `
+                    <h3>Hasil IP Lookup</h3>
+                    <p><b>IP Address:</b> ${data.ip}</p>
+                    <p><b>Negara:</b> ${data.country_name}</p>
+                    <p><b>Kota:</b> ${data.city}</p>
+                    <p><b>ISP:</b> ${data.org}</p>
+                `;
+            } catch (error) {
+                document.getElementById("result").innerHTML = "Gagal mengambil data.";
+            }
+        }
+
+        async function hostLookup() {
+            let domain = document.getElementById("domain").value;
+            if (!domain) return alert("Masukkan Domain!");
+
+            try {
+                let ip = await fetch(`https://dns.google/resolve?name=${domain}`)
+                    .then(response => response.json())
+                    .then(data => data.Answer ? data.Answer[0].data : "Tidak ditemukan");
+
+                document.getElementById("result").innerHTML = `
+                    <h3>Hasil Host Lookup</h3>
+                    <p><b>Domain:</b> ${domain}</p>
+                    <p><b>IP Address:</b> ${ip}</p>
+                `;
+            } catch (error) {
+                document.getElementById("result").innerHTML = "Gagal mengambil data.";
+            }
+        }
+
+        async function httpCheck() {
+            let domain = document.getElementById("http_domain").value;
+            if (!domain) return alert("Masukkan Domain!");
+
+            try {
+                let response = await fetch(`https://${domain}`, { method: "HEAD" });
+                document.getElementById("result").innerHTML = `
+                    <h3>Hasil HTTP Check</h3>
+                    <p><b>Domain:</b> ${domain}</p>
+                    <p><b>Status:</b> ${response.status} ${response.statusText}</p>
+                `;
+            } catch (error) {
+                document.getElementById("result").innerHTML = "Gagal menghubungi server.";
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Lookup & Network Check</h1>
+
+    <h2>IP Lookup</h2>
+    <input type="text" id="ip" placeholder="Masukkan IP Address">
+    <button onclick="ipLookup()">Cek</button>
+
+    <h2>Host Lookup</h2>
+    <input type="text" id="domain" placeholder="Masukkan Domain">
+    <button onclick="hostLookup()">Cek</button>
+
+    <h2>HTTP Check</h2>
+    <input type="text" id="http_domain" placeholder="Masukkan Domain">
+    <button onclick="httpCheck()">Cek</button>
+
+    <div id="result" style="margin-top: 20px;"></div>
+</body>
+</html>
