@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Judi Online</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #222;
+            color: white;
+        }
+        .menu {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .menu div {
+            width: 30px;
+            height: 5px;
+            background: white;
+            margin: 5px;
+        }
+        .nav {
+            position: absolute;
+            top: 50px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        .nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            margin: 5px 0;
+        }
+        .game-section {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        .slot, .dice, .wheel {
+            font-size: 40px;
+            margin: 20px;
+            background: white;
+            color: black;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        .spinning {
+            animation: spin 1s ease-in-out;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        button {
+            font-size: 18px;
+            padding: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+            background: gold;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: orange;
+        }
+    </style>
+</head>
+<body onload="loadBalance()">
+
+    <h1>💰 Simulasi Judi Online 💰</h1>
+    <div class="menu" onclick="toggleMenu()">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+    <div class="nav" id="nav">
+        <a href="#" onclick="showGame('slot')">🎰 Slot Machine</a>
+        <a href="#" onclick="showGame('dice')">🎲 Lempar Dadu</a>
+        <a href="#" onclick="showGame('wheel')">🎡 Roda Keberuntungan</a>
+    </div>
+
+    <p id="money">💵 Saldo: <span id="balance">1000</span></p>
+
+    <div id="slot" class="game-section active">
+        <h2>🎰 Slot Machine</h2>
+        <div>
+            <div class="slot" id="slot1">❓</div>
+            <div class="slot" id="slot2">❓</div>
+            <div class="slot" id="slot3">❓</div>
+        </div>
+        <p>Taruhan: <input type="number" id="slotBet" value="10" min="10" max="30"></p>
+        <button onclick="spinSlot()">Spin</button>
+        <p id="slotResult"></p>
+    </div>
+
+    <div id="dice" class="game-section">
+        <h2>🎲 Lempar Dadu</h2>
+        <div class="dice" id="diceFace">🎲</div>
+        <p>Taruhan: <input type="number" id="diceBet" value="10" min="10" max="30"></p>
+        <button onclick="rollDice()">Roll</button>
+        <p id="diceResult"></p>
+    </div>
+
+    <div id="wheel" class="game-section">
+        <h2>🎡 Roda Keberuntungan</h2>
+        <div class="wheel" id="wheelFace">🎡</div>
+        <p>Taruhan: <input type="number" id="wheelBet" value="10" min="10" max="30"></p>
+        <button onclick="spinWheel()">Putar</button>
+        <p id="wheelResult"></p>
+    </div>
+
+<script>
+    let balance = 1000;
+
+    function saveBalance() {
+        localStorage.setItem("balance", balance);
+        updateBalance();
+    }
+
+    function loadBalance() {
+        let storedBalance = localStorage.getItem("balance");
+        if (storedBalance !== null) {
+            balance = parseInt(storedBalance);
+        } else {
+            saveBalance();
+        }
+        updateBalance();
+    }
+
+    function updateBalance() {
+        document.getElementById("balance").textContent = balance;
+    }
+
+    function toggleMenu() {
+        let nav = document.getElementById("nav");
+        nav.style.display = (nav.style.display === "block") ? "none" : "block";
+    }
+
+    function showGame(gameId) {
+        let sections = document.querySelectorAll(".game-section");
+        sections.forEach(section => section.classList.remove("active"));
+        document.getElementById(gameId).classList.add("active");
+    }
+
+    function spinSlot() {
+        let bet = parseInt(document.getElementById("slotBet").value);
+        if (bet > balance) {
+            alert("Uang tidak cukup! , inilah akibat bermain judi, hanya membuat anda miskin !");
+            return;
+        }
+        balance -= bet;
+        saveBalance();
+
+        setTimeout(() => {
+            const symbols = ["🍒", "🍋", "🔔", "⭐", "💎"];
+            let slot1 = symbols[Math.floor(Math.random() * symbols.length)];
+            let slot2 = symbols[Math.floor(Math.random() * symbols.length)];
+            let slot3 = symbols[Math.floor(Math.random() * symbols.length)];
+
+            document.getElementById("slot1").textContent = slot1;
+            document.getElementById("slot2").textContent = slot2;
+            document.getElementById("slot3").textContent = slot3;
+
+            if (slot1 === slot2 && slot2 === slot3) {
+                balance += bet * 5;
+                document.getElementById("slotResult").textContent = `🎉 Jackpot! Anda menang ${bet * 5}💵!`;
+            } else {
+                document.getElementById("slotResult").textContent = "😞 Coba lagi!";
+            }
+            saveBalance();
+        }, 1000);
+    }
+
+    function rollDice() {
+        let bet = parseInt(document.getElementById("diceBet").value);
+        if (bet > balance) {
+            alert("Uang tidak cukup! , inilah akibat bermain judi, hanya membuat anda miskin ! , inilah akibat bermain judi, hanya membuat anda miskin !");
+            return;
+        }
+        balance -= bet;
+        saveBalance();
+
+        setTimeout(() => {
+            let result = Math.floor(Math.random() * 6) + 1;
+            document.getElementById("diceFace").textContent = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"][result - 1];
+
+            if (result === 6) {
+                balance += bet * 2;
+                document.getElementById("diceResult").textContent = `🎉 Anda menang ${bet * 2}💵!`;
+            } else {
+                document.getElementById("diceResult").textContent = "😞 Coba lagi!";
+            }
+            saveBalance();
+        }, 1000);
+    }
+</script>
+
+</body>
+</html>
