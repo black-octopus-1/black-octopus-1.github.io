@@ -122,7 +122,7 @@
     </div>
 
 <script>
-    let balance = 1000;
+    let balance = 5000;
 
     function saveBalance() {
         localStorage.setItem("balance", balance);
@@ -157,11 +157,14 @@
     function spinSlot() {
         let bet = parseInt(document.getElementById("slotBet").value);
         if (bet > balance) {
-            alert("Uang tidak cukup! , inilah akibat bermain judi, hanya membuat anda miskin !");
+            alert("Uang tidak cukup! , inilah akibat bermain judi, hanya membuat anda miskin ! Inilah akibat bermain judi, hanya membuat anda miskin!");
             return;
         }
         balance -= bet;
         saveBalance();
+
+        let slotElements = [document.getElementById("slot1"), document.getElementById("slot2"), document.getElementById("slot3")];
+        slotElements.forEach(el => el.classList.add("spinning"));
 
         setTimeout(() => {
             const symbols = ["🍒", "🍋", "🔔", "⭐", "💎"];
@@ -169,6 +172,7 @@
             let slot2 = symbols[Math.floor(Math.random() * symbols.length)];
             let slot3 = symbols[Math.floor(Math.random() * symbols.length)];
 
+            slotElements.forEach(el => el.classList.remove("spinning"));
             document.getElementById("slot1").textContent = slot1;
             document.getElementById("slot2").textContent = slot2;
             document.getElementById("slot3").textContent = slot3;
@@ -183,27 +187,25 @@
         }, 1000);
     }
 
-    function rollDice() {
-        let bet = parseInt(document.getElementById("diceBet").value);
+    function spinWheel() {
+        let bet = parseInt(document.getElementById("wheelBet").value);
         if (bet > balance) {
-            alert("Uang tidak cukup! , inilah akibat bermain judi, hanya membuat anda miskin ! , inilah akibat bermain judi, hanya membuat anda miskin !");
+            alert("Uang tidak cukup! , inilah akibat bermain judi, hanya membuat anda miskin !");
             return;
         }
         balance -= bet;
         saveBalance();
 
-        setTimeout(() => {
-            let result = Math.floor(Math.random() * 6) + 1;
-            document.getElementById("diceFace").textContent = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"][result - 1];
+        let wheel = document.getElementById("wheelFace");
+        wheel.classList.add("spinning");
 
-            if (result === 6) {
-                balance += bet * 2;
-                document.getElementById("diceResult").textContent = `🎉 Anda menang ${bet * 2}💵!`;
-            } else {
-                document.getElementById("diceResult").textContent = "😞 Coba lagi!";
-            }
+        setTimeout(() => {
+            wheel.classList.remove("spinning");
+            let winnings = bet * Math.floor(Math.random() * 10);
+            balance += winnings;
+            document.getElementById("wheelResult").textContent = `🎉 Anda menang ${winnings}💵!`;
             saveBalance();
-        }, 1000);
+        }, 2000);
     }
 </script>
 
