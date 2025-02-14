@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulator Judi Online</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #222;
+            color: white;
+        }
+        .slot-machine {
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+        }
+        .slot {
+            width: 80px;
+            height: 80px;
+            font-size: 40px;
+            text-align: center;
+            line-height: 80px;
+            margin: 5px;
+            background-color: white;
+            color: black;
+            border-radius: 10px;
+        }
+        button {
+            font-size: 20px;
+            padding: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Simulator Slot Online</h1>
+    <div class="slot-machine">
+        <div class="slot" id="slot1">❓</div>
+        <div class="slot" id="slot2">❓</div>
+        <div class="slot" id="slot3">❓</div>
+    </div>
+    <button onclick="spin()">Spin</button>
+    <p id="result"></p>
+
+    <script>
+        function spin() {
+            const symbols = ["🍒", "🍋", "🔔", "⭐", "💎"];
+            let slot1 = symbols[Math.floor(Math.random() * symbols.length)];
+            let slot2 = symbols[Math.floor(Math.random() * symbols.length)];
+            let slot3 = symbols[Math.floor(Math.random() * symbols.length)];
+
+            document.getElementById("slot1").textContent = slot1;
+            document.getElementById("slot2").textContent = slot2;
+            document.getElementById("slot3").textContent = slot3;
+
+            if (slot1 === slot2 && slot2 === slot3) {
+                document.getElementById("result").textContent = "🎉 Jackpot! Anda menang!";
+            } else {
+                document.getElementById("result").textContent = "😞 Coba lagi!";
+            }
+        }
+    </script>
+
+</body>
+</html>
