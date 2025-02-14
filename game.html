@@ -207,6 +207,20 @@
             saveBalance();
         }, 2000);
     }
+            function rollDice() {
+            if (balance < 50) {
+                alert("Uang tidak cukup! YAHAHAHA MISKIN");
+                return;
+            }
+            balance -= 50;
+            saveBalance();
+
+            document.getElementById("diceFace").classList.add("spinning");
+            setTimeout(() => {
+                document.getElementById("diceFace").classList.remove("spinning");
+                document.getElementById("diceFace").textContent = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"][Math.floor(Math.random() * 6)];
+            }, 1000);
+        }
 </script>
 
 </body>
