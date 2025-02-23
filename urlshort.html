@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Short URL</title>
+</head>
+<body>
+    <h2>Buat Link Pendek</h2>
+    <input type="text" id="shortCode" placeholder="Kode pendek (cth: google)">
+    <input type="text" id="longUrl" placeholder="URL panjang (cth: https://google.com)">
+    <button onclick="createShortLink()">Buat Link</button>
+
+    <h2>Gunakan Link Pendek</h2>
+    <input type="text" id="searchCode" placeholder="Masukkan kode pendek">
+    <button onclick="redirect()">Go</button>
+
+    <script>
+        const GITHUB_TOKEN = "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";
+        const REPO_OWNER = "black-octopus-1";
+        const REPO_NAME = "black-octopus-1.github.io";
+        const FILE_PATH = "urls.json";
+        const API_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+
+        function createShortLink() {
+            const shortCode = document.getElementById('shortCode').value.trim();
+            const longUrl = document.getElementById('longUrl').value.trim();
+
+            if (!shortCode || !longUrl) {
+                alert("Kode pendek dan URL tidak boleh kosong!");
+                return;
+            }
+
+            fetch(API_URL, {
+                headers: { Authorization: `token ${GITHUB_TOKEN}` }
+            })
+            .then(res => res.json())
+            .then(data => {
+                let content = JSON.parse(atob(data.content));
+                content[shortCode] = longUrl;
+                let updatedContent = btoa(JSON.stringify(content, null, 2));
+
+                return fetch(API_URL, {
+                    method: "PUT",
+                    headers: {
+                        Authorization: `token ${GITHUB_TOKEN}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        message: `Menambah link pendek: ${shortCode}`,
+                        content: updatedContent,
+                        sha: data.sha
+                    })
+                });
+            })
+            .then(() => alert("Link pendek berhasil dibuat!"))
+            .catch(() => alert("Gagal menyimpan link pendek."));
+        }
+
+        function redirect() {
+            const shortCode = document.getElementById('searchCode').value.trim();
+
+            fetch(`https://${REPO_OWNER}.github.io/${REPO_NAME}/urls.json`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data[shortCode]) {
+                        window.location.href = data[shortCode];
+                    } else {
+                        alert("URL tidak ditemukan!");
+                    }
+                })
+                .catch(() => alert("Gagal memuat data URL."));
+        }
+    </script>
+</body>
+</html>
