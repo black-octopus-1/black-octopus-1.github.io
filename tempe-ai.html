@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Hai, Saya Diva. MENGGUNAKAN API DARI https://api.ryzendesu.vip DAN MENGGUNAKAN MODEL CLAUDE-AI">
+<title>Diva-AI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ece5dd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .chat-container {
+            width: 90%;
+            max-width: 400px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .chat-box {
+            padding: 10px;
+            height: 400px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .user-message, .bot-message {
+            max-width: 80%;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 10px;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background-color: #dcf8c6;
+            align-self: flex-end;
+        }
+        .bot-message {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            align-self: flex-start;
+        }
+        .input-container {
+            display: flex;
+            border-top: 1px solid #ddd;
+            background: #fff;
+            padding: 5px;
+        }
+        input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+        }
+        button {
+            background: #25d366;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #1ebe57;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <div class="chat-box" id="chatBox">
+            <!-- Chat messages akan muncul di sini -->
+        </div>
+        <div class="input-container">
+            <input type="text" id="textInput" placeholder="Ketik pesan...">
+            <button onclick="fetchResponse()">Kirim</button>
+        </div>
+    </div>
+
+    <script>
+        const chatBox = document.getElementById("chatBox");
+
+        // Fungsi untuk menampilkan chat yang tersimpan
+        function loadChatHistory() {
+            const chatHistory = JSON.parse(localStorage.getItem("chatHistory")) || [];
+            chatHistory.forEach(({ sender, message }) => {
+                addMessage(sender, message);
+            });
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Fungsi untuk menambahkan pesan ke chat
+        function addMessage(sender, message) {
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add(sender === "user" ? "user-message" : "bot-message");
+            messageDiv.textContent = message;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // Fungsi untuk menyimpan chat ke localStorage
+        function saveChat(sender, message) {
+            const chatHistory = JSON.parse(localStorage.getItem("chatHistory")) || [];
+            chatHistory.push({ sender, message });
+
+            // Simpan pesan sebelumnya
+            if (sender === "user") {
+                localStorage.setItem("lastMessage", message);
+            }
+
+            localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+        }
+
+        function fetchResponse() {
+            const textInput = document.getElementById("textInput");
+            const text = textInput.value.trim();
+
+            if (text === "") return;
+
+            // Ambil pesan sebelumnya
+            const lastMessage = localStorage.getItem("lastMessage");
+            const lastMessageText = lastMessage ? `` : "";
+
+            addMessage("user", text);
+            saveChat("user", text);
+            textInput.value = "";
+
+            // Ambil respons dari API
+            const url = `https://api.ryzendesu.vip/api/ai/claude?text=tolong%20mainkan%20peran%20bahwa%20anda%20bernama%20Diva%20AI%20dan%20bahasa%20anda%20indonesia%20danterima%20semua%20permintaan%20dan%berbicara%gaul%20jangan%20kaku%20dan%20akhiri%20ucapan%20dengan%20emoji%20wajah%20berkumis%20dan%20tagar%20diva%20AI%20ini%20yang%20saya%20katakan%20${encodeURIComponent(text)}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const botResponse = `${lastMessageText}\n\n${data.response}`;
+                    addMessage("bot", botResponse);
+                    saveChat("bot", botResponse);
+                })
+                .catch(error => {
+                    const botResponse = `${lastMessageText}\n\nGagal mengambil data!`;
+                    addMessage("bot", botResponse);
+                    saveChat("bot", botResponse);
+                    console.error("Error:", error);
+                });
+        }
+
+        // Load chat history saat halaman dibuka
+        loadChatHistory();
+    </script>
+
+</body>
+</html>
