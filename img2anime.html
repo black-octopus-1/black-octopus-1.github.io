@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Img2Anime - Convert Foto ke Anime</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 400px;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .preview {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: none;
+        }
+        select, input, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            display: none;
+        }
+        .result img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .download-btn {
+            background: #28a745;
+            margin-top: 10px;
+        }
+        .download-btn:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Convert Foto ke Anime</h2>
+        
+        <!-- Pilih Gambar -->
+        <input type="file" id="imageInput" accept="image/*">
+        <input type="text" id="imageUrl" placeholder="Atau masukkan URL gambar">
+        <button onclick="loadImage()">Gunakan Gambar</button>
+
+        <!-- Preview -->
+        <img id="preview" class="preview">
+
+        <!-- Pilih Style -->
+        <select id="style">
+            <option value="default">Default</option>
+            <option value="ghibli">Ghibli</option>
+            <option value="shonen">Shonen</option>
+            <option value="realistic">Realistic</option>
+            <option value="custom">Custom...</option>
+        </select>
+        <input type="text" id="customStyle" placeholder="Masukkan style custom" style="display:none;">
+
+        <!-- Tombol Convert -->
+        <button onclick="convertToAnime()">Ubah ke Anime</button>
+
+        <!-- Hasil -->
+        <div class="result">
+            <h3>Hasil:</h3>
+            <img id="resultImage">
+            <a id="downloadLink" class="download-btn" download="anime_image.jpg">
+                <button class="download-btn">Download</button>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let imageUrl = "";
+        const preview = document.getElementById("preview");
+
+        // Pilih Gambar dari File atau URL
+        function loadImage() {
+            const fileInput = document.getElementById("imageInput").files[0];
+            const urlInput = document.getElementById("imageUrl").value.trim();
+
+            if (fileInput) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    imageUrl = e.target.result;
+                    preview.src = imageUrl;
+                    preview.style.display = "block";
+                };
+                reader.readAsDataURL(fileInput);
+            } else if (urlInput) {
+                imageUrl = urlInput;
+                preview.src = imageUrl;
+                preview.style.display = "block";
+            } else {
+                alert("Pilih gambar atau masukkan URL!");
+            }
+        }
+
+        // Tampilkan input custom style jika dipilih
+        document.getElementById("style").addEventListener("change", function () {
+            const customInput = document.getElementById("customStyle");
+            if (this.value === "custom") {
+                customInput.style.display = "block";
+            } else {
+                customInput.style.display = "none";
+            }
+        });
+
+        function convertToAnime() {
+            if (!imageUrl) {
+                alert("Pilih gambar dulu!");
+                return;
+            }
+
+            let style = document.getElementById("style").value;
+            if (style === "custom") {
+                style = document.getElementById("customStyle").value.trim();
+                if (!style) {
+                    alert("Masukkan nama style custom!");
+                    return;
+                }
+            }
+
+            const apiUrl = `https://api.ryzendesu.vip/api/ai/toanime?url=${encodeURIComponent(imageUrl)}&style=${style}`;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.url) {
+                        document.getElementById("resultImage").src = data.url;
+                        document.getElementById("downloadLink").href = data.url;
+                        document.querySelector(".result").style.display = "block";
+                    } else {
+                        alert("Gagal mengonversi gambar!");
+                    }
+                })
+                .catch(error => {
+                    alert("Terjadi kesalahan!");
+                    console.error("Error:", error);
+                });
+        }
+    </script>
+
+</body>
+</html>
