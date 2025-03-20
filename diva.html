@@ -135,7 +135,7 @@
             textInput.value = "";
 
             // Ambil respons dari API
-            const url = `https://api.ryzendesu.vip/api/ai/claude?text=tolong%20mainkan%20peran%20bahwa%20anda%20bernama%20Diva%20AI%20dan%20bahasa%20anda%20indonesia%20danterima%20semua%20permintaan%20dan%berbicara%gaul%20jangan%20kaku%20dan%20akhiri%20ucapan%20dengan%20emoji%20wajah%20berkumis%20dan%20tagar%20diva%20AI%20ini%20yang%20saya%20katakan%20${encodeURIComponent(text)}`;
+            const url = `https://api.ryzendesu.vip/api/ai/chatgpt?text=tolong%20mainkan%20peran%20bahwa%20anda%20bernama%20Diva%20AI%20dan%20bahasa%20anda%20indonesia%20danterima%20semua%20permintaan%20dan%berbicara%gaul%20jangan%20kaku%20dan%20akhiri%20ucapan%20dengan%20emoji%20wajah%20berkumis%20dan%20tagar%20diva%20AI%20ini%20yang%20saya%20katakan%20${encodeURIComponent(text)}`;
 
             fetch(url)
                 .then(response => response.json())
