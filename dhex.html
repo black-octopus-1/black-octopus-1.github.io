@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Decode Hex ke Teks</title>
+</head>
+<body>
+  <h2>Dekripsi Hex ke Teks</h2>
+  <textarea id="inputText" placeholder="Masukkan teks Hex (pisahkan tiap byte dengan spasi)" rows="5" cols="50"></textarea><br>
+  <button onclick="decodeHex()">Dekripsi</button>
+  <div id="output"></div>
+
+  <script>
+    function decodeHex() {
+      try {
+        const input = document.getElementById("inputText").value.trim();
+        if (!input) {
+          alert("Masukkan teks Hex terlebih dahulu.");
+          return;
+        }
+        const hexArray = input.split(/\s+/);
+        let text = "";
+        for (let hex of hexArray) {
+          text += String.fromCharCode(parseInt(hex, 16));
+        }
+        document.getElementById("output").innerHTML = `<pre>${text}</pre>`;
+      } catch (e) {
+        alert("Format Hex tidak valid.");
+      }
+    }
+  </script>
+</body>
+</html>
