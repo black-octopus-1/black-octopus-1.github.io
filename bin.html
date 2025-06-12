@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Encode ke Biner</title>
+</head>
+<body>
+  <h2>Enkripsi Teks ke Biner</h2>
+  <textarea id="inputText" placeholder="Masukkan teks di sini..." rows="5" cols="50"></textarea><br>
+  <button onclick="encodeBinary()">Enkripsi</button>
+  <div id="output"></div>
+
+  <script>
+    function encodeBinary() {
+      const input = document.getElementById("inputText").value;
+      if (!input) {
+        alert("Masukkan teks terlebih dahulu.");
+        return;
+      }
+      let binary = "";
+      for (let i = 0; i < input.length; i++) {
+        binary += input.charCodeAt(i).toString(2).padStart(8, "0") + " ";
+      }
+      document.getElementById("output").innerHTML = `<pre>${binary.trim()}</pre>`;
+    }
+  </script>
+</body>
+</html>
