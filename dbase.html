@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Decode Base64 ke Teks</title>
+</head>
+<body>
+  <h2>Dekripsi Base64 ke Teks</h2>
+  <textarea id="inputText" placeholder="Masukkan teks Base64 di sini..." rows="5" cols="50"></textarea><br>
+  <button onclick="decodeBase64()">Dekripsi</button>
+  <div id="output"></div>
+
+  <script>
+    function decodeBase64() {
+      try {
+        const input = document.getElementById("inputText").value;
+        if (!input) {
+          alert("Masukkan teks Base64 terlebih dahulu.");
+          return;
+        }
+        const decoded = decodeURIComponent(escape(atob(input)));
+        document.getElementById("output").innerHTML = `<pre>${decoded}</pre>`;
+      } catch (e) {
+        alert("Format Base64 tidak valid.");
+      }
+    }
+  </script>
+</body>
+  </html>
