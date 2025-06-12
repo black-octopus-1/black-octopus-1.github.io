@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Enkripsi Teks ke Base64</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+    }
+    #output {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f2f2f2;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h2>Enkripsi Teks ke Base64</h2>
+  <textarea id="inputText" placeholder="Masukkan teks di sini..."></textarea><br>
+  <button onclick="encodeBase64()">Enkripsi ke Base64</button>
+
+  <div id="output"></div>
+
+  <script>
+    function encodeBase64() {
+      const input = document.getElementById('inputText').value;
+      if (!input) {
+        alert("Silakan masukkan teks terlebih dahulu.");
+        return;
+      }
+
+      // Encode ke Base64
+      const encoded = btoa(unescape(encodeURIComponent(input)));
+
+      // Tampilkan hasil
+      document.getElementById('output').innerHTML = `
+        <strong>Hasil Enkripsi Base64:</strong>
+        <pre>${encoded}</pre>
+      `;
+    }
+  </script>
+</body>
+</html>
