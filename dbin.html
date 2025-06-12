@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Decode Biner ke Teks</title>
+</head>
+<body>
+  <h2>Dekripsi Biner ke Teks</h2>
+  <textarea id="inputText" placeholder="Masukkan teks Biner (pisahkan tiap byte dengan spasi)" rows="5" cols="50"></textarea><br>
+  <button onclick="decodeBinary()">Dekripsi</button>
+  <div id="output"></div>
+
+  <script>
+    function decodeBinary() {
+      try {
+        const input = document.getElementById("inputText").value.trim();
+        if (!input) {
+          alert("Masukkan teks Biner terlebih dahulu.");
+          return;
+        }
+        const binArray = input.split(/\s+/);
+        let text = "";
+        for (let bin of binArray) {
+          text += String.fromCharCode(parseInt(bin, 2));
+        }
+        document.getElementById("output").innerHTML = `<pre>${text}</pre>`;
+      } catch (e) {
+        alert("Format Biner tidak valid.");
+      }
+    }
+  </script>
+</body>
+</html>
