@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Text to Voice</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+    textarea { width: 80%; height: 150px; font-size: 16px; }
+    button { padding: 10px 20px; font-size: 16px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Text to Voice (TTS)</h1>
+  <textarea id="text" placeholder="Tulis teks di sini..."></textarea><br>
+  <button onclick="speak()">🔊 Ucapkan</button>
+
+  <script>
+    function speak() {
+      const text = document.getElementById('text').value;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'id-ID'; // Bahasa Indonesia
+      speechSynthesis.speak(utterance);
+    }
+  </script>
+</body>
+</html>
