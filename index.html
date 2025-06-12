@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Menu</title>
   <style>
-    /* Background Matrix Style */
     body, html {
       margin: 0;
       padding: 0;
@@ -72,18 +71,20 @@
     const canvas = document.getElementById("matrixCanvas");
     const ctx = canvas.getContext("2d");
 
-    // Set canvas to full screen
-    canvas.height = window.innerHeight;
-    canvas.width = window.innerWidth;
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
     const letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     const fontSize = 14;
-    const columns = canvas.width / fontSize;
-
-    const drops = Array(Math.floor(columns)).fill(1);
+    let columns = Math.floor(canvas.width / fontSize);
+    let drops = Array(columns).fill(1);
 
     function draw() {
-      // translucent background to create trail effect
       ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -102,7 +103,7 @@
       }
     }
 
-    setInterval(draw, 33); // ~30fps
+    setInterval(draw, 33);
   </script>
 </body>
 </html>
